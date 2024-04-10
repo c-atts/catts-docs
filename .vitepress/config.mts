@@ -2,8 +2,8 @@ import { defineConfig } from "vitepress";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "c-atts",
-  description: "c-atts",
+  title: "C–ATTS",
+  description: "C–ATTS",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
