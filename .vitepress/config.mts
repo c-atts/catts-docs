@@ -14,7 +14,10 @@ export default defineConfig({
     sidebar: [
       {
         text: "Docs",
-        items: [{ text: "Composite Attestations", link: "/docs" }],
+        items: [
+          { text: "Composite Attestations", link: "/docs" },
+          { text: "The C–ATTS flow", link: "/flow" },
+        ],
       },
     ],
 

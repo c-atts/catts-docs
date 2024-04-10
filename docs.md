@@ -1,287 +1,49 @@
-#  C–ATTS
-## Composite Attestations
+#  Composite Attestations
 Composite attestations are a new type of attestation combining data from multiple sources to form a unified and verifiable credential.
 
 > [!NOTE]
 > C–ATTS is in active development. We expect to release a beta version by the end of Q2 2024. Read more about the project in this article: [Introducing: Composite Attestations Engine (C–ATTS)](https://kristoferlund.se/blog/240214-catts).
 
-## Flow
+## Introduction
 
-![](/images/240214-catts-4.jpg)
+The [Ethereum Attestation Service](https://attest.sh) (EAS) is an infrastructure public good for making attestations onchain or offchain about anything. Attestations can represent identity, reputation, knowledge, and much more. EAS is a tokenless and free service that is available on mainnet, several L2s, and various testnets. EAS is a great service! It is tokenless and free for anyone to use. **This means it is being used. A lot!** 
 
-The flow of creating composite attestations using CATTS is as follows:
-1. **Create recipe**: Define a recipe that includes custom queries, processing logic and output schema.
-2. **Simulate run**: Simulate the run to verify the correctness of the recipe. Queries are run in the browser at no cost. A run can be simulated many times during the recipe creation process.
-3. **Run**: Running the recipe means that the CATTS engine executes all queries and process the result set according to the processing instructions. The run output is saved and a run receipt is created as an attestation.
-4. **Create attestations**: The CATTS engine creates attestations based on the run output and the output schema.
+There is a universe of attestation data out there. EAS provides an API that allows you to query that data which makes integration into websites and apps easy.
 
-## Recipe
+![](/images/240214-catts-2.jpg)
 
-The CATTS recipe is a set of instructions that CATTS uses to create attestations. The recipe is in itself an attestation, consisting of the following parts:
+Let's say I, as an app, want to offer membership to users that meet certain criteria. I my backend, I can use the EAS API to query all attestations that are relevant to my use case. Then, I write some custom logic to process the data and let the outcome of that logic determine if a user is eligible for membership. Easy!
 
-- [Queries](#queries)
-- [Query variables](#query-variables)
-- [Query settings](#query-settings)
-- [Processor](#processor)
-- [Output schema](#output-schema)
+But, what if I need to show a proof of the outcome of my logic? What if I need to create an attestation that says "This user is eligible for membership"? I can of course easily create that attestation. But, without knowledge of the data I processed or about the processing logic I ran on the data, how can anyone verify that the attestation I created is correct?
 
+Wouldn't it be great if there was a way to create attestations based on the result of custom queries and processing logic and have the result of that logic be independently verifiable? That's where **CATTS**, the **Composite Attestations Engine** comes in.
 
-### Queries
+![](/images/240214-catts-3.jpg)
 
-- A query fetches data from the EAS GraphQL API. 
-- Queries are executed in the canister as HTTPS outcalls.
-- The result of a query is determined by the query itself and the query variables.
+CATTS allows for the creation of **composite attestations** based on custom queries and processing logic. Running on the Internet Computer (ICP) as a smart contract canister, it leverages data from existing attestations via the EAS GraphQL API, ensuring that the creation and verification of attestations are both reliable and transparent. The processing logic is defined as a piece of arbitrary JavaScript code, which is executed securely within the canister environment. The engine also provides a receipt for each run, detailing the settings used, which aids in verifying the correctness of the composite attestations. 
 
-Example:
+![](/images/240214-catts-5.jpg)
 
-```graphql
-query Query($where: AttestationWhereInput) {
-  attestations(where: $where) {
-    recipient
-  }
-}
-```
+## Planned features
 
-The above query will return all the recipients of attestations that match the criteriea defined in the `where` variable.
+- **Custom queries**: Fetch data from the EAS GraphQL API using custom queries.
+- **Custom processing logic**: Define custom processing logic to create composite attestations based on the result of the queries.
+- **Secure execution**: The processing logic is executed securely within the canister environment.
+- **Receipts**: A receipt is created for each run, detailing the settings used, which aids in verifying the correctness of the composite attestations.
+- **Chain agnostic**: Run queries on one chain or on multiple chains.
+- **Verifiable**: The result of the processing logic is independently verifiable.
+- **Open**: The engine is open source and free to use. Anyone can create and run recipes.
+- **Cost effective**: Attestation runs can be simulated before they are run. This ensures that the cost of running the canister is minimized.
 
-### Query variables
+## Future features
 
-- All variables that are allowed by the EAS GraphQL API schema are allowed in the recipe.
-- Every query can have its own set of variables.
-- Variables cannot be overridden on a per run basis. This might be a feature in future iterations.
-
-Example:
-
-```json
-[
-  "where": {
-    "schemaId": {
-      "equals": "0xCBA...321"
-    },
-  },
-]
-```
-
-The above query and variable will return all the receipents of all attestations that have been created using the schema with UID `0xCBA...321`.
-
-### Query settings
-
-- Every query can have its own settings.
-- In the first iteration, the settings available are limited. In future iterations, more advanced settings will be available.
-- Settings:
-  - `chain: number` - The chain to run the query on.
-
-### Processor
-
-- After running the queries, we want to process the result set to create aggregate attestations using arbitrary logic. 
-- The logic expresses what we want to create attestations for.
-- Processors are run in the canister. This is a key feature of CATTS. Running the processor in the canister ensures that the processor is run in a secure environment and that we can trust the result of the processor.
--  Processors are written in JavaScript.
-
-Example, imagine a Javascript function that performs the following logic:
-
-```
-Process the data set and return only those recipients that have attestations for 
-"is a human" and "has a gitcoin passport score of 30 or more".
-```
-
-### Output schema
-
-- The output schema is a Attestation schema that is used to create attestations based on the result of the processor.
-- Schemas are defined outside of EEA and are referenced by UID.
-- Schema:
-  - `UID: string` - UID referencing an EAS schema.
-  - `chain: number` - The chain to create the attestations on.
-
-## Composite Attestation
-
-A composite attestation is an attestation that is created based on the result of the processor. The attestations are created by the CATTS canister. 
-
-- Every attestation references the "run receipt" attestation in the "referenced attestation" field.
-- The CATTS canister has to pay for the attestations it creates. This cost is passed on to the user that is making the run. The cost is determined by the number of attestations that are created and the chain that the attestations are created on.
-
-## Receipt
-
-A run receipt is created for every run, as a way to verify the correctness of the composite attestations. The receipt is created as an attestation on the same chain as the attestations that were created.
-
-- All receipts use the same predefined schema.
-- Schema:
-  - `recipe_uid: string` - The UID of the recipe that was run.
-  - `data_raw: any[]` - The raw data that was returned from the queries.
-  - `data_processed: any[]` - The data that was returned from the processor.
-  - `timestamp: number` - The timestamp of the run.
-  - `initiator: string (ethereum address)` - The address that initiated the run.
-
-## Example run: User has attestation 1 AND attestation 2
-
-The below example shows how to create a composite attestation for a user that has both attestation 1 and attestation 2.
-
-### Recipe
-
-#### Query
-
-Fetch all recipients of attestations, determined by the `where1` and `where2` variables.
-
-```graphql
-query Query1($where1: AttestationWhereInput) {
-  attestations(where: $where1) {
-    recipient
-  }
-}
-query Query2($where2: AttestationWhereInput) {
-  attestations(where: $where2) {
-    recipient
-  }
-}
-```
-
-
-#### Query variables
-
-The above query and variable will return all the receipents of all attestations that have been created using the schema with UID `0xCBA...321` and `0xABC...123`.
-
-```json
-{
-  "where1": {
-    "schemaId": {
-      "equals": "0xCBA...321"
-    },
-  },
-  "where2": {
-	  "schemaId": {
-      "equals": "0xABC...123"
-    },
-  },
-}
-```
-
-
-#### Query settings
-
-Note the `chain` setting. In the first query, we are running the query on chain 1, and in the second query, we are running the query on chain 10.
-
-```json
-{
-  "Query1": {
-    "chain": 1
-  },
-  "Query2": {
-    "chain": 10
-  }
-}
-```
-
-
-#### Processor
-
-Create a merged list with addresses that exist in query 1 and 2:
-
-``` js
-function process(data) {
-  const recipientsQuery1 = data.Query1.map(item => item.recipient);
-  const recipientsQuery2 = data.Query2.map(item => item.recipient);
-  return recipientsQuery1.filter(recipient => recipientsQuery2.includes(recipient));
-}
-```
-
-#### Output schema
-
-Define the composite attestation schema as follows:
-
-```json
-{
-  "UID": "0x123...456",
-  "schema": [
-    {
-      "name": "hasAttestation1and2",
-      "type": "boolean"
-    }
-  ]
-}
-```
-
-A user that has both attestation 1 and 2 will receive an attestation with the schema `0x123...456` and the data `{"hasAttestation1and2": true}`.
-
-### Run
-
-#### 1. Run queries
-
-Running the two queries return the following result set:
-```json
-{
-  "Query1": [
-    { "recipient": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" },
-    { "recipient": "0x1E0447b19BB6EcFdAe1e4AE1694b0C3659614e4e" },
-    { "recipient": "0x7ED57EdC930333F9130B247797C718234272755F" }
-  ],
-  "Query2": [
-    { "recipient": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" },
-    { "recipient": "0xbd0531975D4D273e557E40856320304B39806AD8" },
-    { "recipient": "0x7ED57EdC930333F9130B247797C718234272755F" }
-  ]
-}
-```
-
-#### 2. Run processor
-
-After processing the data, only two addresses remain:
-```json
-[
-  { "recipient": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" },
-  { "recipient": "0x7ED57EdC930333F9130B247797C718234272755F" }
-]
-```
-
-#### 3. Create attestations
-
-Create attestations for all addresses in the processor result:
-
-```json
-{
-  "attestations": [
-    {
-      "recipient": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
-      "schema": "0x123...456",
-      "data": {
-        "hasAttestation1and2": true
-      }
-    },
-    {
-      "recipient": "0x7ED57EdC930333F9130B247797C718234272755F",
-      "schema": "0x123...456",
-      "data": {
-        "hasAttestation1and2": true
-      }
-    }
-  ]
-}
-```
-
-#### 4. Create run receipt
-
-The run receipt reflects all details of the run and is created as an attestation.
-
-```json
-{
-  "run": {
-    "recipe_uid": "0xabC...867",
-    "data_raw": {
-      "Query1": [
-        { "recipient": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" },
-        { "recipient": "0x1E0447b19BB6EcFdAe1e4AE1694b0C3659614e4e" },
-        { "recipient": "0x7ED57EdC930333F9130B247797C718234272755F" }
-      ],
-      "Query2": [
-        { "recipient": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" },
-        { "recipient": "0xbd0531975D4D273e557E40856320304B39806AD8" },
-        { "recipient": "0x7ED57EdC930333F9130B247797C718234272755F" }
-      ]
-    },
-    "data_processed": [
-      { "recipient": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" },
-      { "recipient": "0x7ED57EdC930333F9130B247797C718234272755F" }
-    ],
-    "timestamp": 1634025600,
-    "initiator": "0xAAA...111"
-  }
-}
+- **Advanced settings**: 
+  - Allow query chain settings to be overridden on a per run and per query basis.
+- **Allow users to "claim" their composite attestations**:
+  - Transfers cost of creating attestations to the user.
+  - Allow the user to claim an attestation using multiple addresses.
+- **Even more chain agnostic**:
+  - Allow the creation of attestations on multiple chains.
+  - Allow querying other attestation services, not just EAS.
+- **ZK attestations**:
+  - Allow the creation of zero knowledge attestations.
