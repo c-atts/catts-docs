@@ -6,7 +6,14 @@ hero:
   name: "C–ATTS"
   text: "Composite Attestations"
   tagline: Composite attestations are a new type of attestation combining data from multiple sources to form a unified and verifiable credential.
-  image: /images/index-diagram.png
+  actions:
+    - theme: brand
+      text: Composite Attestations?
+      link: /docs
+    - theme: alt
+      text: GitHub
+      link: https://github.com/c-atts
+  image: /images/diagram.png
 
 features:
   - icon: 🛠️ 

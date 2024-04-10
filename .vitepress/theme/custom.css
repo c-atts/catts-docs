@@ -1,4 +1,6 @@
 :root {
   --vp-c-brand-1: #a2a06c !important;
-  --vp-c-brand-2: #747bff;
+  --vp-c-brand-2: #7b7a4a !important;
+  --vp-button-brand-bg: var(--vp-c-brand-1) !important;
+  --vp-button-brand-hover-bg: var(--vp-c-brand-2) !important;
 }
