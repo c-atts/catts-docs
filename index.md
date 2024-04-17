@@ -13,7 +13,7 @@ hero:
     - theme: alt
       text: GitHub
       link: https://github.com/c-atts
-  image: /images/diagram.png
+  image: /diagram.png
 
 features:
   - icon: 🛠️ 
