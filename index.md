@@ -8,11 +8,11 @@ hero:
   tagline: Composite attestations are a new type of attestation combining data from multiple sources to form a unified and verifiable credential.
   actions:
     - theme: brand
-      text: Composite Attestations?
-      link: /docs
+      text: Open demo app
+      link: https://77ydd-naaaa-aaaal-qi2ja-cai.icp0.io
     - theme: alt
-      text: GitHub
-      link: https://github.com/c-atts
+      text: Composite Attestations what?
+      link: /docs
   image: /diagram.png
 
 features:
