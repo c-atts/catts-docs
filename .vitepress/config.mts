@@ -7,6 +7,7 @@ export default defineConfig({
     "Composite attestations are a new type of attestation combining data from multiple sources to form a unified and verifiable credential.",
 
   head: [
+    ["link", { rel: "icon", href: "/favicon.svg" }],
     ["meta", { property: "og:url", content: "https://docs.catts.run" }],
     ["meta", { property: "og:type", content: "website" }],
     ["meta", { property: "og:title", content: "C–ATTS | Docs" }],
