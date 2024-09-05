@@ -1,0 +1,11 @@
+.vp-external-link-icon {
+  background-color: #ebb30b;
+  height: 30px;
+  line-height: 30px;
+  border-radius: 10px;
+  text-align: center; /* Centers any text or icon */
+}
+
+html.dark .vp-external-link-icon {
+  background-color: #564b2f;
+}

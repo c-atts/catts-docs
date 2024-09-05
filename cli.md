@@ -1,4 +1,4 @@
-## Command Line Interface
+# Command Line Interface
 
 The C–ATTS CLI is the easiest way to develop, test, and run C–ATTS recipes locally. The CLI fetches query results, runs processor scripts, and validates schema items against the recipe's schema.
 
