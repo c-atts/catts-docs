@@ -2,7 +2,7 @@ import { defineConfig } from "vitepress";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "C–ATTS, Composite Attestations",
+  title: "C–ATTS | Docs ",
   description:
     "Composite attestations are a new type of attestation combining data from multiple sources to form a unified and verifiable credential.",
 
@@ -42,16 +42,12 @@ export default defineConfig({
     ["meta", { name: "twitter:image", content: "/og.jpg" }],
   ],
   themeConfig: {
-    nav: [
-      { text: "Home", link: "/" },
-      { text: "Docs", link: "/docs" },
-    ],
+    nav: [{ text: "App", link: "https://catts.run" }],
 
     sidebar: [
       {
-        text: "Docs",
         items: [
-          { text: "Composite Attestations", link: "/docs" },
+          { text: "Composite Attestations", link: "/" },
           { text: "The C–ATTS flow", link: "/flow" },
         ],
       },

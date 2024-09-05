@@ -1,0 +1,11 @@
+{
+  "canisters": {
+    "docs": {
+      "build": ["pnpm docs:build"],
+      "source": [".vitepress/dist"],
+      "type": "assets"
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
