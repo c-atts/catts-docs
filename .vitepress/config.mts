@@ -7,12 +7,9 @@ export default defineConfig({
     "Composite attestations are a new type of attestation combining data from multiple sources to form a unified and verifiable credential.",
 
   head: [
-    ["meta", { property: "og:url", content: "https://catts.run" }],
+    ["meta", { property: "og:url", content: "https://docs.catts.run" }],
     ["meta", { property: "og:type", content: "website" }],
-    [
-      "meta",
-      { property: "og:title", content: "Composite Attestations | C–ATTS" },
-    ],
+    ["meta", { property: "og:title", content: "C–ATTS | Docs" }],
     [
       "meta",
       {
@@ -21,14 +18,11 @@ export default defineConfig({
           "Composite attestations are a new type of attestation combining data from multiple sources to form a unified and verifiable credential.",
       },
     ],
-    ["meta", { property: "og:image", content: "/og.jpg" }],
+    ["meta", { property: "og:image", content: "/ogimage.png" }],
 
     ["meta", { name: "twitter:card", content: "summary_large_image" }],
     ["meta", { property: "twitter:url", content: "https://catts.run" }],
-    [
-      "meta",
-      { name: "twitter:title", content: "Composite Attestations | C–ATTS" },
-    ],
+    ["meta", { name: "twitter:title", content: "C–ATTS | Docs" }],
     ["meta", { name: "twitter:site", content: "@c_atts" }],
     ["meta", { name: "twitter:creator", content: "@kristoferlund" }],
     [
@@ -39,7 +33,7 @@ export default defineConfig({
           "Composite attestations are a new type of attestation combining data from multiple sources to form a unified and verifiable credential.",
       },
     ],
-    ["meta", { name: "twitter:image", content: "/og.jpg" }],
+    ["meta", { name: "twitter:image", content: "/ogimage.png" }],
   ],
   themeConfig: {
     nav: [{ text: "App", link: "https://catts.run" }],
@@ -47,8 +41,10 @@ export default defineConfig({
     sidebar: [
       {
         items: [
-          { text: "Composite Attestations", link: "/" },
-          { text: "The C–ATTS flow", link: "/flow" },
+          { text: "Introduction", link: "/" },
+          { text: "Recipes", link: "/recipes" },
+          { text: "Processor", link: "/processor" },
+          { text: "CLI", link: "/cli" },
         ],
       },
     ],

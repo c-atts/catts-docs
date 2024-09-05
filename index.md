@@ -1,49 +1,59 @@
-#  Composite Attestations
-Composite attestations are a new type of attestation combining data from multiple sources to form a unified and verifiable credential.
+# Attest to Any Onchain Data
 
-> [!NOTE]
-> C–ATTS is in active development. We expect to release a beta version by the end of Q3 2024. Read more about the project in this article: [Introducing: Composite Attestations Engine (C–ATTS)](https://kristoferlund.se/blog/240214-catts).
+**If you can query the data, you can attest to it!**
 
-## Introduction
+![](/images/index-1.svg)
 
-The [Ethereum Attestation Service](https://attest.sh) (EAS) is an infrastructure public good for making attestations onchain or offchain about anything. Attestations can represent identity, reputation, knowledge, and much more. EAS is a tokenless and free service that is available on mainnet, several L2s, and various testnets. EAS is a great service! It is tokenless and free for anyone to use. **This means it is being used. A lot!**
+C–ATTS lets you to attest to a wide range of onchain data, making it easy to create secure and verifiable credentials. Whether it’s **identity**, **reputation**, or **transaction data**, you can generate attestations on multiple EVM L1s and L2s.
 
-There is a universe of attestation data out there. EAS provides an API that allows you to query that data which makes integration into websites and apps easy.
+## Attestations
 
-![](/images/240214-catts-2.jpg)
+An attestations is a statement that is made about a subject. It can be about anything, from a person's identity to a transaction's details. Attestations are made by an attester, who is the person or entity that makes the statement. 
 
-Let's say I, as an app, want to offer membership to users that meet certain criteria. I my backend, I can use the EAS API to query all attestations that are relevant to my use case. Then, I write some custom logic to process the data and let the outcome of that logic determine if a user is eligible for membership. Easy!
+Example attestations:
+- I attest to having met Alice.
+- Project X attests to Alice being a member of their community.
+- Alice attests to having received a payment from Bob.
 
-But, what if I need to show a proof of the outcome of my logic? What if I need to create an attestation that says "This user is eligible for membership"? I can of course easily create that attestation. But, without knowledge of the data I processed or about the processing logic I ran on the data, how can anyone verify that the attestation I created is correct?
+## EAS
 
-Wouldn't it be great if there was a way to create attestations based on the result of custom queries and processing logic and have the result of that logic be independently verifiable? That's where **CATTS**, the **Composite Attestations Engine** comes in.
+The [Ethereum Attestation Service](https://attest.sh) (EAS) is an infrastructure public good for making attestations onchain or offchain about anything. Attestations can represent identity, reputation, knowledge, and much more. EAS is a tokenless and free service that is available on mainnet, several L2s, and various testnets. 
 
-![](/images/240214-catts-3.jpg)
+> EAS is a standard and base layer where any entity can make attestations about anything. This primitive and ledger of attestations will help us decentralize more than just money and assets. We'll be able to coordinate and build reputation systems, voting systems, governance systems, decentralized social media, provenance of goods, knowledge and social graphs, and much much more.
 
-CATTS allows for the creation of **composite attestations** based on custom queries and processing logic. Running on the Internet Computer (ICP) as a smart contract canister, it leverages data from existing attestations via the EAS GraphQL API, ensuring that the creation and verification of attestations are both reliable and transparent. The processing logic is defined as a piece of arbitrary JavaScript code, which is executed securely within the canister environment. The engine also provides a receipt for each run, detailing the settings used, which aids in verifying the correctness of the composite attestations.
+## Composite Attestations
 
-![](/images/240214-catts-5.jpg)
+C–ATTS is a service that allows you to create **composite attestations** based on custom queries and processing logic. 
 
-## Planned features
+**To put it simply, C–ATTS lets you query multiple on-chain data points, transform or combine the results as needed, and generate an attestation based on the final output.**
 
-- **Custom queries**: Fetch data from the EAS GraphQL API using custom queries.
-- **Custom processing logic**: Define custom processing logic to create composite attestations based on the result of the queries.
-- **Secure execution**: The processing logic is executed securely within the canister environment.
-- **Receipts**: A receipt is created for each run, detailing the settings used, which aids in verifying the correctness of the composite attestations.
-- **Chain agnostic**: Run queries on one chain or on multiple chains.
-- **Verifiable**: The result of the processing logic is independently verifiable.
-- **Open**: The engine is open source and free to use. Anyone can create and run recipes.
-- **Cost effective**: Attestation runs can be simulated before they are run. This ensures that the cost of running the canister is minimized.
+![](/images/index-2.svg)
 
-## Future features
+The image above exemplifies a typical use case for C–ATTS. In this scenario, a community wants to create an attestation that says "This user is eligible for membership". Data is fetched from three different sources on different chains, processed, and combined to create the final attestation. The processing logic guarantees that the user is eligible for membership only if they meet all the criteria.
 
-- **Advanced settings**:
-  - Allow query chain settings to be overridden on a per run and per query basis.
-- **Allow users to "claim" their composite attestations**:
-  - Transfers cost of creating attestations to the user.
-  - Allow the user to claim an attestation using multiple addresses.
-- **Even more chain agnostic**:
-  - Allow the creation of attestations on multiple chains.
-  - Allow querying other attestation services, not just EAS.
-- **ZK attestations**:
-  - Allow the creation of zero knowledge attestations.
+## The C–ATTS engine
+
+> An attestation is not worth anything if you cannot trust the party that created it.
+
+The C–ATTS engine is a smart contract canister that runs on the [Internet Computer](https://internetcomputer.org/) (ICP), ensuring that the creation and verification of attestations are both reliable and transparent. 
+
+Thanks to the cross-chain capabilities of the ICP, the C–ATTS engine can both act as an "Oracle" fetching data from onchain and offchain sources, and as a "Verifier" that can attest to the correctness of the composite attestations it creates. ICP canisters can sign Ethereum transactions thanks to advanced chain key cryptography, making it possible to create attestations on multiple EVM chains without compromising security.
+
+Currently, C–ATTS supports creating attestations on Optimism, Arbitrum, Base and Ethereum Sepolia.
+
+## Query support
+
+The C–ATTS engine can query any data source providing open GraphQL or REST API enpoints! This includes, but is not limited to:
+
+### The EAS API
+
+The [EAS API](https://docs.attest.org/docs/developer-tools/api) is a public API that allows you to query the Ethereum Attestation Service. You can use it to fetch attestations, attesters, subjects, and more. The EAS API is a free and open service that is available on mainnet, several L2s, and various testnets.
+
+### The Graph API
+
+[The Graph](https://thegraph.com/explorer) is a decentralized protocol for indexing and querying data from blockchains. You can use it to query data from Ethereum, Arbitrum, Optimism, and more.
+
+### The Moralis API
+
+[Moralis](https://moralis.io/api/) is a blockchain infrastructure provider that offers a wide range of services, including a powerful API that allows you to query data from multiple blockchains. Their APIs cover a wide range of use cases, from fetching transaction data to querying NFT metadata.
+
